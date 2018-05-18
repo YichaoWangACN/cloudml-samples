@@ -20,154 +20,46 @@ import six
 import tensorflow as tf
 
 # Define the format of your input data including unused columns
-CSV_COLUMNS = ['dataservices_sharethis_raw.consumer_id',
-               'dataservices_sharethis_raw.standardtimestamp',
-               'dataservices_sharethis_raw.mappedevent',
-               'dataservices_sharethis_raw.channel',
-               'dataservices_sharethis_raw.url',
-               'dataservices_sharethis_raw.refdomain',
-               'dataservices_sharethis_raw.useragent',
-               'dataservices_sharethis_raw.browserfamily',
-               'dataservices_sharethis_raw.os',
-               'dataservices_sharethis_raw.devicetype',
-               'dataservices_sharethis_raw.searchquery',
-               'dataservices_sharethis_raw.iab_iabcategories_0_score',
-               'dataservices_sharethis_raw.iab_iabcategories_0_levelone',
-               'dataservices_sharethis_raw.iab_iabcategories_0_leveltwo',
-               'dataservices_sharethis_raw.iab_iabcategories_1_score',
-               'dataservices_sharethis_raw.iab_iabcategories_1_levelone',
-               'dataservices_sharethis_raw.iab_iabcategories_1_leveltwo',
-               'dataservices_sharethis_raw.iab_iabcategories_2_score',
-               'dataservices_sharethis_raw.iab_iabcategories_2_levelone',
-               'dataservices_sharethis_raw.iab_iabcategories_2_leveltwo',
-               'dataservices_sharethis_raw.iab_iabcategories_3_score',
-               'dataservices_sharethis_raw.iab_iabcategories_3_levelone',
-               'dataservices_sharethis_raw.iab_iabcategories_3_leveltwo',
-               'dataservices_sharethis_raw.iab_iabcategories_4_score',
-               'dataservices_sharethis_raw.iab_iabcategories_4_levelone',
-               'dataservices_sharethis_raw.iab_iabcategories_4_leveltwo',
-               'dataservices_sharethis_raw.iab_iabcategories_5_score',
-               'dataservices_sharethis_raw.iab_iabcategories_5_levelone',
-               'dataservices_sharethis_raw.iab_iabcategories_5_leveltwo',
-               'dataservices_sharethis_raw.iab_iabcategories_6_score',
-               'dataservices_sharethis_raw.iab_iabcategories_6_levelone',
-               'dataservices_sharethis_raw.iab_iabcategories_6_leveltwo',
-               'dataservices_sharethis_raw.iab_iabcategories_7_score',
-               'dataservices_sharethis_raw.iab_iabcategories_7_levelone',
-               'dataservices_sharethis_raw.iab_iabcategories_7_leveltwo',
-               'dataservices_sharethis_raw.iab_iabcategories_8_score',
-               'dataservices_sharethis_raw.iab_iabcategories_8_levelone',
-               'dataservices_sharethis_raw.iab_iabcategories_8_leveltwo']
-CSV_COLUMN_DEFAULTS = [[0],
-                       [''],
-                       [''],
-                       [''],
-                       [''],
-                       [''],
-                       [''],
-                       [''],
-                       [''],
-                       [''],
-                       [''],
-                       [0],
-                       [''],
-                       [''],
-                       [0],
-                       [''],
-                       [''],
-                       [0],
-                       [''],
-                       [''],
-                       [0],
-                       [''],
-                       [''],
-                       [0],
-                       [''],
-                       [''],
-                       [0],
-                       [''],
-                       [''],
-                       [0],
-                       [''],
-                       [''],
-                       [0],
-                       [''],
-                       [''],
-                       [0],
-                       [''],
-                       [''],
-                       ]
-LABEL_COLUMN = 'dataservices_sharethis_raw.iab_iabcategories_0_levelone'
-LABELS = ['technology_&_computing',
-          'travel',
-          'style_&_fashion',
-          'society',
-          'home_&_garden',
-          'reference',
-          'food_&_drink',
-          'news',
-          'personal_finance',
-          'arts_&_entertainment',
-          'sports',
-          'careers_education',
-          'pets',
-          'real_estate',
-          'weight_loss',
-          'business',
-          'hotels',
-          'automotive',
-          'shopping',
+CSV_COLUMNS = ['consumer_id', 'exact_age', 'length_of_residence', 'num_adults',
+               'gender', 'homeowner', 'pres_kids', 'hh_marital_status', 'dwell_type', 'metro_nonmetro',
+               'urban_rural_flag', 'flag_pres_kids_true', 'age_range',
+               'num_adults_range', 'length_of_residence_range', 'iab_iabcategories_0_score', 'iab_iabcategories_0_levelone',
+               'iab_iabcategories_0_leveltwo']
+CSV_COLUMN_DEFAULTS = [[''], [0.0], [0.0], [0.0], [''], [''], [''], [''], [''], [''],
+                       [''], [''], [''], [''], [''], [''], [''], ['']]
+LABEL_COLUMN = 'iab_iabcategories_0_score'
+LABELS = ['low',
+          'medium',
           'hobbies_&_interests',
+          'high',
+          'arts_&_entertainment',
+          'society',
+          'travel',
           'law',
-          'k-6_educators_7-12_education',
-          'careers',
-          '_gov't_ & _politics',
-          'hobbies_&_interests_video_&_computer_games',
-          'exercise',
-          'music',
-          'beauty',
+          'news',
+          'food_&_drink',
+          'business',
           'uncategorized',
-          'football',
-          'logistics',
-          'skiing_snowboarding',
-          'computer_networking',
-          'reptiles',
-          'marketing',
-          'video_&_computer_games',
-          'construction',
-          'theme_parks',
-          'air_travel',
-          'baseball',
-          'pro_basketball',
-          'general',
-          'books_&_literature',
-          'forestry_agriculture',
-          'insurance',
-          'beginning_investing',
-          'apartments',
-          'education',
           'health_&_fitness',
-          'special_education',
-          'fine_art',
-          'resume_writing_/_advice',
-          'arts_&_crafts',
-          'celebrity_fan_/_gossip',
-          'boxing',
-          'sci-fi_&_fantasy',
-          'buying_/_selling_homes',
-          'golf',
-          'running_/_jogging_walking',
-          'antivirus_software',
-          'geographic',
-          'cats',
-          'movies',
-          'c/c++',
-          'green_solutions',
+          'home_&_garden',
+          'automotive',
+          'pets',
+          'reference',
+          'education',
+          'real_estate',
+          'personal_finance',
+          'sports',
+          'careers',
+          'technology_&_computing',
           'science',
-          'interior_decorating',
-          'board_games_/_puzzles',
-          'landscaping',
+          'style_&_fashion',
+          'hobbies_&_interests_video_&_computer_games',
+          'smartphone',
+          ' madison',
+          'tablet',
+          'personal computer'
           ]
+# LABELS = ['A','M']
 
 # Define the initial ingestion of each feature used by your model.
 # Additionally, provide metadata about the feature.
@@ -177,47 +69,50 @@ INPUT_COLUMNS = [
     # For categorical columns with known values we can provide lists
     # of values ahead of time.
     tf.feature_column.categorical_column_with_vocabulary_list(
-        'gender', [' Female', ' Male']),
-
+        'gender', ['F', 'M']),
     tf.feature_column.categorical_column_with_vocabulary_list(
-        'race',
-        [' Amer-Indian-Eskimo', ' Asian-Pac-Islander',
-         ' Black', ' Other', ' White']
-    ),
+        'homeowner',
+        ['H', 'R', ]),
     tf.feature_column.categorical_column_with_vocabulary_list(
-        'education',
-        [' Bachelors', ' HS-grad', ' 11th', ' Masters', ' 9th',
-         ' Some-college', ' Assoc-acdm', ' Assoc-voc', ' 7th-8th',
-         ' Doctorate', ' Prof-school', ' 5th-6th', ' 10th',
-         ' 1st-4th', ' Preschool', ' 12th']),
+        'pres_kids',
+        ['TRUE', '']),
     tf.feature_column.categorical_column_with_vocabulary_list(
-        'marital_status',
-        [' Married-civ-spouse', ' Divorced', ' Married-spouse-absent',
-         ' Never-married', ' Separated', ' Married-AF-spouse', ' Widowed']),
+        'hh_marital_status',
+        ['M', 'S']),
     tf.feature_column.categorical_column_with_vocabulary_list(
-        'relationship',
-        [' Husband', ' Not-in-family', ' Wife', ' Own-child', ' Unmarried',
-         ' Other-relative']),
+        'dwell_type',
+        ['A', 'M', 'P', 'S', '']),
     tf.feature_column.categorical_column_with_vocabulary_list(
-        'workclass',
-        [' Self-emp-not-inc', ' Private', ' State-gov',
-         ' Federal-gov', ' Local-gov', ' ?', ' Self-emp-inc',
-         ' Without-pay', ' Never-worked']
-    ),
+        'metro_nonmetro',
+        ['Metro', 'Nonmetro']),
+    tf.feature_column.categorical_column_with_vocabulary_list(
+        'urban_rural_flag',
+        ['Rural', 'Urban']),
+    tf.feature_column.categorical_column_with_vocabulary_list(
+        'age_range',
+        ['41-50', '51-60', '31-40', '61-70', '21-30', '71-80',
+         '81-90', '91-100', '11-20', '111-120', '101-110']),
+    tf.feature_column.categorical_column_with_vocabulary_list(
+        'num_adults_range',
+        ['1-2', '3-4', '5-6', '7-8', '>8']),
+    tf.feature_column.categorical_column_with_vocabulary_list(
+        'flag_pres_kids_true',
+        ['1', '0']),
+    tf.feature_column.categorical_column_with_vocabulary_list(
+        'length_of_residence_range',
+        ['1-5', '6-10', '11-15', '>15'], dtype=tf.string, default_value=-1, num_oov_buckets=0),
 
     # For columns with a large number of values, or unknown values
     # We can use a hash function to convert to categories.
-    tf.feature_column.categorical_column_with_hash_bucket(
-        'occupation', hash_bucket_size=100, dtype=tf.string),
-    tf.feature_column.categorical_column_with_hash_bucket(
-        'native_country', hash_bucket_size=100, dtype=tf.string),
+    # tf.feature_column.categorical_column_with_hash_bucket(
+    #     'occupation', hash_bucket_size=100, dtype=tf.string),
+    # tf.feature_column.categorical_column_with_hash_bucket(
+    #     'native_country', hash_bucket_size=100, dtype=tf.string),
 
     # Continuous base columns.
-    tf.feature_column.numeric_column('age'),
-    tf.feature_column.numeric_column('education_num'),
-    tf.feature_column.numeric_column('capital_gain'),
-    tf.feature_column.numeric_column('capital_loss'),
-    tf.feature_column.numeric_column('hours_per_week'),
+    tf.feature_column.numeric_column('exact_age'),
+    tf.feature_column.numeric_column('length_of_residence'),
+    tf.feature_column.numeric_column('num_adults'),
 ]
 
 UNUSED_COLUMNS = set(CSV_COLUMNS) - {col.name for col in INPUT_COLUMNS} - \
@@ -252,61 +147,66 @@ def build_estimator(config, embedding_size=8, hidden_units=None):
     Returns:
       A DNNCombinedLinearClassifier
     """
-    (gender, race, education, marital_status, relationship,
-     workclass, occupation, native_country, age,
-     education_num, capital_gain, capital_loss, hours_per_week) = INPUT_COLUMNS
+    (gender, homeowner, pres_kids, hh_marital_status, dwell_type, metro_nonmetro, urban_rural_flag,
+     age_range, num_adults_range, flag_pres_kids_true, length_of_residence_range,
+     exact_age, num_adults, length_of_residence) = INPUT_COLUMNS
+
     # Build an estimator.
 
     # Reused Transformations.
     # Continuous columns can be converted to categorical via bucketization
     age_buckets = tf.feature_column.bucketized_column(
-        age, boundaries=[18, 25, 30, 35, 40, 45, 50, 55, 60, 65])
+        exact_age, boundaries=[18, 25, 30, 35, 40, 45, 50, 55, 60, 65])
 
     # Wide columns and deep columns.
     wide_columns = [
         # Interactions between different categorical features can also
         # be added as new virtual features.
-        tf.feature_column.crossed_column(
-            ['education', 'occupation'], hash_bucket_size=int(1e4)),
-        tf.feature_column.crossed_column(
-            [age_buckets, race, 'occupation'], hash_bucket_size=int(1e6)),
-        tf.feature_column.crossed_column(
-            ['native_country', 'occupation'], hash_bucket_size=int(1e4)),
+        # tf.feature_column.crossed_column(
+        #     ['homeowner', 'pres_kids'], hash_bucket_size=int(1e4)),
+        # tf.feature_column.crossed_column(
+        #     [age_buckets, 'urban_rural_flag', 'flag_pres_kids_true'], hash_bucket_size=int(1e6)),
+        # tf.feature_column.crossed_column(
+        #     ['dwell_type', 'metro_nonmetro'], hash_bucket_size=int(1e4)),
         gender,
-        native_country,
-        education,
-        occupation,
-        workclass,
-        marital_status,
-        relationship,
-        age_buckets,
+        homeowner,
+        pres_kids,
+        hh_marital_status,
+        dwell_type,
+        metro_nonmetro,
+        urban_rural_flag,
+        flag_pres_kids_true,
+        age_range,
+        num_adults_range,
+        length_of_residence_range,
+        age_buckets
     ]
 
     deep_columns = [
         # Use indicator columns for low dimensional vocabularies
-        tf.feature_column.indicator_column(workclass),
-        tf.feature_column.indicator_column(education),
-        tf.feature_column.indicator_column(marital_status),
         tf.feature_column.indicator_column(gender),
-        tf.feature_column.indicator_column(relationship),
-        tf.feature_column.indicator_column(race),
-
+        tf.feature_column.indicator_column(homeowner),
+        tf.feature_column.indicator_column(pres_kids),
+        tf.feature_column.indicator_column(hh_marital_status),
+        tf.feature_column.indicator_column(metro_nonmetro),
+        tf.feature_column.indicator_column(urban_rural_flag),
+        tf.feature_column.indicator_column(flag_pres_kids_true),
+        tf.feature_column.indicator_column(length_of_residence_range),
         # Use embedding columns for high dimensional vocabularies
-        tf.feature_column.embedding_column(
-            native_country, dimension=embedding_size),
-        tf.feature_column.embedding_column(occupation, dimension=embedding_size),
-        age,
-        education_num,
-        capital_gain,
-        capital_loss,
-        hours_per_week,
+        # tf.feature_column.embedding_column(
+        #     native_country, dimension=embedding_size),
+        # tf.feature_column.embedding_column(occupation, dimension=embedding_size),
+        exact_age,
+        length_of_residence,
+        num_adults
     ]
 
     return tf.estimator.DNNLinearCombinedClassifier(
         config=config,
         linear_feature_columns=wide_columns,
         dnn_feature_columns=deep_columns,
-        dnn_hidden_units=hidden_units or [100, 70, 50, 25]
+        dnn_hidden_units=hidden_units or [100, 70, 50, 25],
+        n_classes=30
     )
 
 
